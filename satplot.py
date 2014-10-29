@@ -137,7 +137,7 @@ if __name__ == '__main__':
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
     p.add_argument('tlefn',help='file with TLE to parse',type=str)
     p.add_argument('date',help='time to plot YYYY-mm-ddTHH:MM:SSZ')
-    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',default=(65,-148,0))
+    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(65,-148,0))
     p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
     args = p.parse_args()
 

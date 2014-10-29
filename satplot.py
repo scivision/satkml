@@ -10,9 +10,9 @@ from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
 
-def main(tlefn,date,kmlfn):
+def main(tlefn,date,kmlfn,obslla):
     obs = Observer()
-    obs.lat = str(65); obs.lon = str(-148)
+    obs.lat = str(obslla[0]); obs.lon = str(obslla[1])
     obs.elevation=0
 
 #%% preallocation
@@ -53,8 +53,7 @@ def main(tlefn,date,kmlfn):
     data.ix[belowhoriz,['az','el','srange']] = nan
 #%% write kml
     dokml(belowhoriz,data['lat'],data['lon'],data['alt'],
-          obs.lat.real,obs.lon.real,obs.elevation.real,
-          kmlfn)
+          obslla, kmlfn,satnum)
 #%% plot
     doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
 
@@ -78,18 +77,17 @@ def loadTLE(filename):
     print(str(len(satlist)) + ' satellites loaded into list')
     return satlist,prn
 
-def dokml(belowhoriz,lat,lon,alt_m,lat0,lon0,alt0,kmlfn):
+def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):
 
-    Npt = lat.size
     if kmlfn is not None:
         kmlfn = expanduser(kmlfn)
         print('writing KML to ' + kmlfn)
         kml1d = skml.Kml()
-        for i in range(Npt):
-            if not belowhoriz[i]:
-                linestr = kml1d.newlinestring(name='')
-                linestr.coords = [(lon0,   lat0,   alt0),
-                                  (lon[i], lat[i], alt_m[i])]
+        for s in satnum:
+            if not belowhoriz[s]:
+                linestr = kml1d.newlinestring(name=str(s))
+                linestr.coords = [(lla[1], lla[0], lla[2]),
+                                  (lon[s], lat[s], alt_m[s])]
                 linestr.altitudemode = skml.AltitudeMode.relativetoground
         kml1d.save(kmlfn)
 
@@ -139,8 +137,9 @@ if __name__ == '__main__':
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
     p.add_argument('tlefn',help='file with TLE to parse',type=str)
     p.add_argument('date',help='time to plot YYYY-mm-ddTHH:MM:SSZ')
+    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',default=(65,-148,0))
     p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
     args = p.parse_args()
 
-    main(args.tlefn,args.date,args.kmlfn)
+    main(args.tlefn,args.date,args.kmlfn,args.lla)
 

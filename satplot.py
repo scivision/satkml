@@ -3,28 +3,29 @@ from pdb import set_trace
 from ephem import readtle,Observer
 import simplekml as skml
 from os.path import expanduser
-from numpy import degrees,nan,isnan
+from numpy import degrees,nan,isnan,arange
 from pandas import date_range, DataFrame
-from matplotlib.pyplot import figure,show
+from matplotlib.pyplot import figure,show,gca
 from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
 
-def main(tlefn,date,kmlfn,obslla):
+def main(tlefn,date,kmlfn,obslla,satreq):
     obs = Observer()
     obs.lat = str(obslla[0]); obs.lon = str(obslla[1])
     obs.elevation=0
 
 #%% preallocation
-    if date is None:
-        satnum = [None]
+    if satreq is not None:
         forNhours = 12
         everyNminutes = 15
-        dates = date_range('2014-10-29T02:00:00',
+        dates = date_range(parse(date),
                            periods=forNhours*60/everyNminutes+1,
                            freq=str(everyNminutes)+'T', tz='UTC')
         data = DataFrame(index=dates,columns=['az','el','lat','lon','alt','srange'])
-        sat = readtle('mySat',tle1, tle2)
+        sats,satnum = loadTLE(tlefn)
+        sat = data.ix[satreq,:]
+        satnum = satreq
         for i,d in enumerate(dates):
             obs.date = d
             sat.compute(obs)
@@ -56,6 +57,34 @@ def main(tlefn,date,kmlfn,obslla):
           obslla, kmlfn,satnum)
 #%% plot
     doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
+#%% fancy plot
+    fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
+
+def fancyplot(lat,lon,dates,satnum):
+    #lon and lat cannot be pandas Series, must be values
+  try:
+    from mpl_toolkits.basemap import Basemap
+    map = Basemap(projection='merc',
+                  llcrnrlat=-80,urcrnrlat=80,
+                  llcrnrlon=-180,urcrnrlon=180,
+                  lat_ts=20,
+                  resolution='c')
+
+    map.drawcoastlines()
+    map.drawcountries()
+    map.drawmeridians(arange(0,360,30))
+    map.drawparallels(arange(-90,90,30))
+    x,y = map(lon,lat)
+    map.plot(x,y,'o',color='#aaaaff',markersize=14)
+    ax = gca()
+    ax.set_title('GPS constellation at\n' + str(dates[0]))
+    for s,xp,yp in zip(satnum,x,y):
+        ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
+    show()
+
+  except:
+    print('could not make fancy plot')
+
 
 def loadTLE(filename):
     """ Loads a TLE file and creates a list of satellites.
@@ -139,7 +168,8 @@ if __name__ == '__main__':
     p.add_argument('date',help='time to plot YYYY-mm-ddTHH:MM:SSZ')
     p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(65,-148,0))
     p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
-    args = p.parse_args()
+    p.add_argument('--sat',help='satellite you want to pick from file',type=str,default=None)
+    a = p.parse_args()
 
-    main(args.tlefn,args.date,args.kmlfn,args.lla)
+    main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat)
 

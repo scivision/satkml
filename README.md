@@ -3,6 +3,9 @@ satkml
 
 make KML of satellites
 
+Note: as with many Python programs, it runs faster in Python 3.4 than Python 2.7. 
+It runs just fine in both Python 2.7 and 3.4
+
 example download/usage. This example is for Fairbanks, Alaska on Oct 29, 2014 at 1600UT
 ```
 cd ~

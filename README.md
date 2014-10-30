@@ -16,3 +16,8 @@ prerequisites:
 ```
 pip install pyephem simplekml pandas matplotlib dateutil numpy
 ```
+
+optional prerequisites: for plotting world map overlay:
+```
+pip install basemap --allow-external basemap --allow-unverified basemap
+```

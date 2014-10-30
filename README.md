@@ -22,9 +22,7 @@ optional prerequisites: for plotting world map overlay:
 pip install basemap --allow-external basemap --allow-unverified basemap
 ```
 
-more examples at:
-http://introtopython.org/visualization_earthquakes.html
-API reference:
-http://matplotlib.org/basemap/
+[more examples](http://introtopython.org/visualization_earthquakes.html)
+[API reference](http://matplotlib.org/basemap/)
 ![alt fancy plot](http://scienceopen.github.io/gpsconst.png)
 ![alt az/el plot](http://scienceopen.github.io/gpsazel.png)

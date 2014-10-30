@@ -25,6 +25,10 @@ optional prerequisites: for plotting world map overlay:
 sudo apt-get install libgeos-dev
 pip install basemap --allow-external basemap --allow-unverified basemap
 ```
+or if that doesn't work for you installing basemap, try:
+```
+sudo apt-get install python-mpltoolkits.basemap python-mpltoolkits.basemap-data
+```
 
 [more examples](http://introtopython.org/visualization_earthquakes.html)
 [API reference](http://matplotlib.org/basemap/)

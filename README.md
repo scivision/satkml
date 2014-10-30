@@ -22,7 +22,7 @@ pip install pyephem simplekml pandas matplotlib dateutil numpy
 
 optional prerequisites: for plotting world map overlay:
 ```
-sudo apt-get install libgeos-dev
+sudo apt-get install libgeos-dev libgeos++-dev
 pip install basemap --allow-external basemap --allow-unverified basemap
 ```
 or if that doesn't work for you installing basemap, try:

@@ -23,3 +23,4 @@ pip install basemap --allow-external basemap --allow-unverified basemap
 ```
 
 ![alt fancy plot](http://scienceopen.github.io/gpsconst.png)
+![alt fancy plot](http://scienceopen.github.io/gpsazel.png)

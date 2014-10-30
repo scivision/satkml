@@ -21,3 +21,5 @@ optional prerequisites: for plotting world map overlay:
 ```
 pip install basemap --allow-external basemap --allow-unverified basemap
 ```
+
+![alt fancy plot](http://scienceopen.github.io/gpsconst.png)

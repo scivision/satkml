@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from pdb import set_trace
 from ephem import readtle,Observer
-import simplekml as skml
 from os.path import expanduser
 from numpy import degrees,nan,isnan,arange
 from pandas import date_range, DataFrame
@@ -52,11 +51,11 @@ def main(tlefn,date,kmlfn,obslla,satreq):
 
     belowhoriz = data['el']<0
     data.ix[belowhoriz,['az','el','srange']] = nan
+#%% basic plot
+    doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
 #%% write kml
     dokml(belowhoriz,data['lat'],data['lon'],data['alt'],
           obslla, kmlfn,satnum)
-#%% plot
-    doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
 #%% fancy plot
     fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
 
@@ -107,8 +106,9 @@ def loadTLE(filename):
     return satlist,prn
 
 def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):
-
-    if kmlfn is not None:
+  if kmlfn is not None:
+    try:
+        import simplekml as skml
         kmlfn = expanduser(kmlfn)
         print('writing KML to ' + kmlfn)
         kml1d = skml.Kml()
@@ -119,6 +119,9 @@ def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):
                                   (lon[s], lat[s], alt_m[s])]
                 linestr.altitudemode = skml.AltitudeMode.relativetoground
         kml1d.save(kmlfn)
+    except:
+      print('unable to write KML. Do you have simplekml package installed?')
+
 
 def doplot(lat,lon,az,el,dates,satnum):
     Npt = lat.size

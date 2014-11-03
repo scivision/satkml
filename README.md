@@ -17,7 +17,7 @@ python satplot.py gps-ops.txt 2014-10-29T16:00:00Z -k out.kml -l 65 -148 0
 
 prerequisites: 
 ```
-pip install pyephem simplekml pandas matplotlib dateutil numpy
+pip install -r requirements.txt
 ```
 
 optional prerequisites: for plotting world map overlay:

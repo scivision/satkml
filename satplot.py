@@ -61,28 +61,27 @@ def main(tlefn,date,kmlfn,obslla,satreq):
 
 def fancyplot(lat,lon,dates,satnum):
     #lon and lat cannot be pandas Series, must be values
-  try:
-    from mpl_toolkits.basemap import Basemap
-    m = Basemap(projection='merc',
-                  llcrnrlat=-80,urcrnrlat=80,
-                  llcrnrlon=-180,urcrnrlon=180,
-                  lat_ts=20,
-                  resolution='c')
+    try:
+        from mpl_toolkits.basemap import Basemap
+        m = Basemap(projection='merc',
+                      llcrnrlat=-80,urcrnrlat=80,
+                      llcrnrlon=-180,urcrnrlon=180,
+                      lat_ts=20,
+                      resolution='c')
 
-    m.drawcoastlines()
-    m.drawcountries()
-    m.drawmeridians(arange(0,360,30))
-    m.drawparallels(arange(-90,90,30))
-    x,y = m(lon,lat)
-    m.plot(x,y,'o',color='#aaaaff',markersize=14)
-    ax = gca()
-    ax.set_title('GPS constellation at\n' + str(dates[0]))
-    for s,xp,yp in zip(satnum,x,y):
-        ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
-    show()
-
-  except:
-    print('could not make fancy plot')
+        m.drawcoastlines()
+        m.drawcountries()
+        m.drawmeridians(arange(0,360,30))
+        m.drawparallels(arange(-90,90,30))
+        x,y = m(lon,lat)
+        m.plot(x,y,'o',color='#aaaaff',markersize=14)
+        ax = gca()
+        ax.set_title('GPS constellation at\n' + str(dates[0]))
+        for s,xp,yp in zip(satnum,x,y):
+            ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
+        show()
+    except:
+        print('could not make fancy plot')
 
 
 def loadTLE(filename):
@@ -106,21 +105,21 @@ def loadTLE(filename):
     return satlist,prn
 
 def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):
-  if kmlfn is not None:
-    try:
-        import simplekml as skml
-        kmlfn = expanduser(kmlfn)
-        print('writing KML to ' + kmlfn)
-        kml1d = skml.Kml()
-        for s in satnum:
-            if not belowhoriz[s]:
-                linestr = kml1d.newlinestring(name=str(s))
-                linestr.coords = [(lla[1], lla[0], lla[2]),
-                                  (lon[s], lat[s], alt_m[s])]
-                linestr.altitudemode = skml.AltitudeMode.relativetoground
-        kml1d.save(kmlfn)
-    except:
-      print('unable to write KML. Do you have simplekml package installed?')
+    if kmlfn is not None:
+        try:
+            import simplekml as skml
+            kmlfn = expanduser(kmlfn)
+            print('writing KML to ' + kmlfn)
+            kml1d = skml.Kml()
+            for s in satnum:
+                if not belowhoriz[s]:
+                    linestr = kml1d.newlinestring(name=str(s))
+                    linestr.coords = [(lla[1], lla[0], lla[2]),
+                                      (lon[s], lat[s], alt_m[s])]
+                    linestr.altitudemode = skml.AltitudeMode.relativetoground
+            kml1d.save(kmlfn)
+        except:
+            print('unable to write KML. Do you have simplekml package installed?')
 
 
 def doplot(lat,lon,az,el,dates,satnum):

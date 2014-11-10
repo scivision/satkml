@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from pdb import set_trace
+#from pdb import set_trace
 from ephem import readtle,Observer
 from os.path import expanduser
 from numpy import degrees,nan,isnan,arange
@@ -63,18 +63,18 @@ def fancyplot(lat,lon,dates,satnum):
     #lon and lat cannot be pandas Series, must be values
   try:
     from mpl_toolkits.basemap import Basemap
-    map = Basemap(projection='merc',
+    m = Basemap(projection='merc',
                   llcrnrlat=-80,urcrnrlat=80,
                   llcrnrlon=-180,urcrnrlon=180,
                   lat_ts=20,
                   resolution='c')
 
-    map.drawcoastlines()
-    map.drawcountries()
-    map.drawmeridians(arange(0,360,30))
-    map.drawparallels(arange(-90,90,30))
-    x,y = map(lon,lat)
-    map.plot(x,y,'o',color='#aaaaff',markersize=14)
+    m.drawcoastlines()
+    m.drawcountries()
+    m.drawmeridians(arange(0,360,30))
+    m.drawparallels(arange(-90,90,30))
+    x,y = m(lon,lat)
+    m.plot(x,y,'o',color='#aaaaff',markersize=14)
     ax = gca()
     ax.set_title('GPS constellation at\n' + str(dates[0]))
     for s,xp,yp in zip(satnum,x,y):
@@ -102,7 +102,7 @@ def loadTLE(filename):
             prn.append(int(search(r'(?<=PRN)\s*\d\d',sat.name).group()))
             l1 = f.readline()
 
-    print(str(len(satlist)) + ' satellites loaded into list')
+    print(len(satlist), 'satellites loaded into list')
     return satlist,prn
 
 def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):

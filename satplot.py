@@ -9,7 +9,7 @@ from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
 
-def main(tlefn,date,kmlfn,obslla,satreq):
+def main(tlefn,date,kmlfn,obslla,satreq, showplot):
     obs = Observer()
     obs.lat = str(obslla[0]); obs.lon = str(obslla[1])
     obs.elevation=0
@@ -52,12 +52,16 @@ def main(tlefn,date,kmlfn,obslla,satreq):
     belowhoriz = data['el']<0
     data.ix[belowhoriz,['az','el','srange']] = nan
 #%% basic plot
-    doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
+    if showplot:
+        doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
 #%% write kml
     dokml(belowhoriz,data['lat'],data['lon'],data['alt'],
           obslla, kmlfn,satnum)
 #%% fancy plot
-    fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
+    if showplot:
+        fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
+
+    return data
 
 def fancyplot(lat,lon,dates,satnum):
     #lon and lat cannot be pandas Series, must be values
@@ -101,7 +105,7 @@ def loadTLE(filename):
             prn.append(int(search(r'(?<=PRN)\s*\d\d',sat.name).group()))
             l1 = f.readline()
 
-    print(len(satlist), 'satellites loaded into list')
+    print(str(len(satlist)) + ' satellites loaded into list')
     return satlist,prn
 
 def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):
@@ -168,10 +172,11 @@ if __name__ == '__main__':
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
     p.add_argument('tlefn',help='file with TLE to parse',type=str)
     p.add_argument('date',help='time to plot YYYY-mm-ddTHH:MM:SSZ')
+    p.add_argument('-p','--plot',help='show plots',action='store_true')
     p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(65,-148,0))
     p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
     p.add_argument('--sat',help='satellite you want to pick from file',type=str,default=None)
     a = p.parse_args()
 
-    main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat)
+    data = main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat,a.plot)
 

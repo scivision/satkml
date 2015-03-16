@@ -84,8 +84,8 @@ def fancyplot(lat,lon,dates,satnum):
         for s,xp,yp in zip(satnum,x,y):
             ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
         show()
-    except:
-        print('could not make fancy plot')
+    except ImportError as e:
+        print('could not make fancy plot  ' + str(e))
 
 
 def loadTLE(filename):
@@ -122,13 +122,13 @@ def dokml(belowhoriz,lat,lon,alt_m,lla,kmlfn,satnum):
                                       (lon[s], lat[s], alt_m[s])]
                     linestr.altitudemode = skml.AltitudeMode.relativetoground
             kml1d.save(kmlfn)
-        except:
-            print('unable to write KML. Do you have simplekml package installed?')
+        except Exception as e:
+            print('unable to write KML. Do you have simplekml package installed? ' + str(e))
 
 
 def doplot(lat,lon,az,el,dates,satnum):
-    Npt = lat.size
-    ax1 = figure(1).gca()
+    fg = figure()
+    ax1 = fg.gca()
     ax1.set_ylabel('lat [deg.]')
     ax1.set_xlabel('lon [deg.]')
     ax1.set_xlim(-180,180)
@@ -140,7 +140,7 @@ def doplot(lat,lon,az,el,dates,satnum):
     ax1.xaxis.set_major_locator(MultipleLocator(30))
     ax1.xaxis.set_minor_locator(MultipleLocator(5))
 
-    ax2 = figure(2).gca()
+    ax2 = figure().gca()
     ax2.set_xlabel('azimuth [deg.]')
     ax2.set_ylabel('elevation [deg.]')
     ax2.grid(True)
@@ -152,7 +152,7 @@ def doplot(lat,lon,az,el,dates,satnum):
         ax1.plot(lon,lat,marker='.')
         ax2.plot(az,el,marker='.')
         ax2.set_title('Azimuth & Elevation starting\n' + str(dates[0]))
-        for i in range(Npt):
+        for i in range(lat.size):
             if not isnan(az[i]):
                 ax2.text(az[i]+3,el[i],dates[i].strftime('%H:%M'),fontsize=8)
     elif len(dates)==1: # lots of sats case

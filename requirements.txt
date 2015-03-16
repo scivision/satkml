@@ -1,6 +1,6 @@
 ephem>=3.7.5
 simplekml>=1.2.2
 pandas>=0.10
-matplotlib>=1.0
-numpy>=1.5
+matplotlib>=1.4
+numpy>=1.6
 

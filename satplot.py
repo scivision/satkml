@@ -44,18 +44,7 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
     else:
         dates = [parse(date)]
         obs.date = dates[0]
-        sats,satnum = loadTLE(tlefn)
-        data = DataFrame(index=satnum,columns=['az','el','lat','lon','alt','srange'])
-
-        for i,s in enumerate(sats):
-            si = satnum[i]
-            s.compute(obs)
-            data.at[si,'lat'] = degrees(s.sublat)
-            data.at[si,'lon'] = degrees(s.sublong)
-            data.at[si,'alt'] = s.elevation
-            data.at[si,'az'] = degrees(s.az)
-            data.at[si,'el'] = degrees(s.alt)
-            data.at[si,'srange'] = s.range
+        data,satnum = compsat(tlefn,obs)
 
     belowhoriz = data['el']<0
     data.ix[belowhoriz,['az','el','srange']] = nan
@@ -70,6 +59,22 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
         fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
 
     return data
+
+def compsat(tlefn,obs):
+    sats,satnum = loadTLE(tlefn)
+    data = DataFrame(index=satnum,columns=['az','el','lat','lon','alt','srange'])
+
+    for i,s in enumerate(sats):
+        si = satnum[i]
+        s.compute(obs)
+        data.at[si,'lat'] = degrees(s.sublat)
+        data.at[si,'lon'] = degrees(s.sublong)
+        data.at[si,'alt'] = s.elevation
+        data.at[si,'az'] = degrees(s.az)
+        data.at[si,'el'] = degrees(s.alt)
+        data.at[si,'srange'] = s.range
+
+    return data,satnum
 
 def fancyplot(lat,lon,dates,satnum):
     #lon and lat cannot be pandas Series, must be values

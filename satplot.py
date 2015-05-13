@@ -3,7 +3,7 @@
 from __future__ import division
 from ephem import readtle,Observer
 from os.path import expanduser
-from numpy import degrees,nan,isnan,arange
+from numpy import degrees,nan,isfinite,arange,radians
 from pandas import date_range, DataFrame
 from matplotlib.pyplot import figure,show,gca
 from matplotlib.ticker import MultipleLocator
@@ -19,7 +19,7 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
         print('observation location not specified. defaults to lat=0, lon=0')
 #%% preallocation
     if satreq is not None:
-        forNhours = 12
+        forNhours = 24
         everyNminutes = 15
         dates = date_range(parse(date),
                            periods=forNhours*60/everyNminutes+1,
@@ -31,14 +31,14 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
         except ValueError as e:
             exit('i had trouble finding satellite {}.   {}'.format(satreq,e))
         satnum = satreq
-        for i,d in enumerate(dates):
+        for d in dates:
             obs.date = d
             sat.compute(obs)
-            data.ix[i,'lat'] = degrees(sat.sublat)
-            data.ix[i,'lon'] = degrees(sat.sublong)
-            data.ix[i,'alt'] = sat.elevation
-            data.ix[i,'az'], data.ix[i,'el'] = degrees(sat.az), degrees(sat.alt)
-            data.ix[i,'srange'] = sat.range
+            data.at[d,'lat'] = degrees(sat.sublat)
+            data.at[d,'lon'] = degrees(sat.sublong)
+            data.at[d,'alt'] = sat.elevation
+            data.at[d,'az'], data.ix[d,'el'] = degrees(sat.az), degrees(sat.alt)
+            data.at[d,'srange'] = sat.range
     else:
         dates = [parse(date)]
         obs.date = dates[0]
@@ -135,7 +135,7 @@ def dokml(belowhoriz,lat,lon,alt_m,obs,kmlfn,satnum):
 
 
 def doplot(lat,lon,az,el,dates,satnum):
-    polar =False
+    polar = True
 
     fg = figure()
     ax1 = fg.gca()
@@ -151,11 +151,21 @@ def doplot(lat,lon,az,el,dates,satnum):
     ax1.xaxis.set_minor_locator(MultipleLocator(5))
 
     if polar:
+        azoffs = 0#radians(3)
+        az = radians(az.values.astype(float))
+        el = 90-el
         ax2=figure().gca(polar=True)
+        ax2.plot(az,el, marker='.',linestyle='')
         ax2.set_theta_zero_location('N')
         ax2.set_theta_direction(-1)
+        ''' http://stackoverflow.com/questions/18721762/matplotlib-polar-plot-is-not-plotting-where-it-should '''
+        ax2.set_yticks(range(0, 90+10, 10))                   # Define the yticks
+        yLabel = ['90', '', '', '60', '', '', '30', '', '', '']
+        ax2.set_yticklabels(yLabel)
     else:
+        azoffs=3
         ax2 = figure().gca()
+        ax2.plot(az,el,marker='.',linestyle='')
         ax2.set_xlabel('azimuth [deg.]')
         ax2.set_ylabel('elevation [deg.]')
         ax2.set_xlim(0,360)
@@ -164,22 +174,21 @@ def doplot(lat,lon,az,el,dates,satnum):
     ax2.grid(True)
 
 
+    ax1.plot(lon,lat,marker='.',linestyle='')
+
     if len(dates) !=1: #vs time case
-        ax1.plot(lon,lat,marker='.')
-        ax2.plot(az,el,marker='.')
         ax2.set_title('Azimuth & Elevation starting\n' + str(dates[0]))
         for i in range(lat.size):
-            if not isnan(az[i]):
-                ax2.text(az[i]+3,el[i],dates[i].strftime('%H:%M'),fontsize=8)
+            if isfinite(az[i]):
+                ax2.text(az[i]+azoffs, el[i],
+                         dates[i].strftime('%H:%M'),fontsize='small')
     else: # lots of sats case
-        ax1.plot(lon,lat,marker='.',linestyle='')
-        ax2.plot(az,el,marker='.',linestyle='')
         ax2.set_title('Azimuth & Elevation by PRN at\n' + str(dates[0]))
         for s in satnum:
-            ax1.text(lon[s]+3,lat[s]+3,s,fontsize=10)
-            if not isnan(az[s]):
-                ax2.text(az[s]+3,el[s],s,fontsize=10)
-
+            ax1.text(lon[s]+3, lat[s]+3,s,fontsize='small')
+            if isfinite(az[s]):
+                ax2.text(az[s]+azoffs, el[s],
+                         s,fontsize='small')
 
     show()
 
@@ -188,11 +197,11 @@ if __name__ == '__main__':
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
     p.add_argument('tlefn',help='file with TLE to parse',type=str)
     p.add_argument('date',help='time to plot YYYY-mm-ddTHH:MM:SSZ',type=str)
-    p.add_argument('-p','--plot',help='show plots',action='store_true')
+    p.add_argument('--noplot',help='show plots',action='store_false')
     p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(None,None,None))
     p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
     p.add_argument('--sat',help='satellite you want to pick from file',type=int,default=None)
     a = p.parse_args()
 
-    data = main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat,a.plot)
+    data = main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat,a.noplot)
 

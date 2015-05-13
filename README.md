@@ -11,12 +11,13 @@ Installation:
 git clone https://github.com/scienceopen/satkml
 conda install --file requirements.txt
 pip install simplekml
-wget http://celestrak.com/NORAD/elements/gps-ops.txt
 ```
 
 Example Use
 -----------
+You can alternatively manually download gps-ops.txt via your web browser.
 ```
+wget http://celestrak.com/NORAD/elements/gps-ops.txt
 python satplot.py gps-ops.txt 2015-04-29T16:00:00Z -k out.kml -l 65 -148 0 -p
 ```
 ------------------------------------------------------------

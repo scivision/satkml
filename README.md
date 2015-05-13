@@ -11,7 +11,7 @@ Installation:
 git clone https://github.com/scienceopen/satkml
 conda install --file requirements.txt
 pip install simplekml
-curl -o ~/satkml/gps-ops.txt http://celestrak.com/NORAD/elements/gps-ops.txt
+wget http://celestrak.com/NORAD/elements/gps-ops.txt
 ```
 
 Example Use

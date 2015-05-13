@@ -21,7 +21,7 @@ Example Use
 -----------
 You need to have the ephemeris files for the satellite(s) you want to plot.
 In this example I'm using GPS satellites.
-You can manually download ephemeris from Dr. Kelso's Celestrack website via your web browser, or use curl or wget.
+You can manually download ephemeris from [Dr. Kelso's](http://www.celestrak.com/webmaster.asp) Celestrack website via your web browser, or use curl or wget.
 ```
 wget http://celestrak.com/NORAD/elements/gps-ops.txt
 ```

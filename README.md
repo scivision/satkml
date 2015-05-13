@@ -22,7 +22,16 @@ Example Use
 You can alternatively manually download gps-ops.txt via your web browser.
 ```
 wget http://celestrak.com/NORAD/elements/gps-ops.txt
+```
+
+Plot all satellites at one time:
+```
 python satplot.py gps-ops.txt 2015-04-29T16:00:00Z -k out.kml -l 65 -148 0 -p
+```
+
+Plot one satellite for a range of time:
+```
+python satplot.py gps-ops.txt 2015-04-29T16:00:00Z -p --sat 32
 ```
 ------------------------------------------------------------
 

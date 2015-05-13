@@ -15,7 +15,7 @@ pip install simplekml
 
 ![alt fancy plot](http://scienceopen.github.io/gpsconst.png)
 
-![alt az/el plot](http://scienceopen.github.io/gpsazel.png)
+![alt az/el plot](azel.png)
 
 Example Use
 -----------

@@ -42,7 +42,7 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
             data.at[d,'az'], data.ix[d,'el'] = degrees(sat.az), degrees(sat.alt)
             data.at[d,'srange'] = sat.range
     else:
-        dates = [parse(date)]
+        dates = [parse(date)] #list for plotting
         obs.date = dates[0]
         data,satnum = compsat(tlefn,obs)
 

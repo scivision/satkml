@@ -8,9 +8,9 @@ Plot satellite az/el, and make KML of satellites for visualization in Google Ear
 Installation:
 -------------
 ```
+git clone https://github.com/scienceopen/satkml
 conda install --file requirements.txt
 pip install simplekml
-git clone https://github.com/scienceopen/satkml
 curl -o ~/satkml/gps-ops.txt http://celestrak.com/NORAD/elements/gps-ops.txt
 ```
 

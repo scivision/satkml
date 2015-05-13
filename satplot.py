@@ -87,6 +87,8 @@ def fancyplot(lat,lon,dates,satnum):
         m.plot(x,y,'o',color='#aaaaff',markersize=14)
         ax = gca()
         ax.set_title('GPS constellation at\n' + str(dates[0]))
+        if not isinstance(satnum,list):
+            satnum = [satnum]
         for s,xp,yp in zip(satnum,x,y):
             ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
         show()

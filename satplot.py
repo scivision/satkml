@@ -7,10 +7,13 @@ from ephem import readtle,Observer
 from os.path import expanduser
 from numpy import degrees,nan,isfinite,arange,radians
 from pandas import date_range, DataFrame
-from matplotlib.pyplot import figure,show,gca
+from matplotlib.pyplot import figure,show
 from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
+
+forNhours = 24
+everyNminutes = 15
 
 def main(tlefn,date,kmlfn,obslla,satreq, showplot):
     obs = Observer()
@@ -21,8 +24,6 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
         print('observation location not specified. defaults to lat=0, lon=0')
 #%% preallocation
     if satreq is not None:
-        forNhours = 24
-        everyNminutes = 15
         dates = date_range(parse(date),
                            periods=forNhours*60/everyNminutes+1,
                            freq=str(everyNminutes)+'T')#, tz='UTC')
@@ -78,7 +79,7 @@ def compsat(tlefn,obs):
 
 def fancyplot(lat,lon,dates,satnum):
     #lon and lat cannot be pandas Series, must be values
-    figure()
+    ax= figure().gca()
     try:
         from mpl_toolkits.basemap import Basemap
         m = Basemap(projection='merc',
@@ -93,7 +94,6 @@ def fancyplot(lat,lon,dates,satnum):
         m.drawparallels(arange(-90,90,30))
         x,y = m(lon,lat)
         m.plot(x,y,'o',color='#aaaaff',markersize=14)
-        ax = gca()
         ax.set_title('GPS constellation at\n' + str(dates[0]))
         if not isinstance(satnum,list):
             satnum = [satnum]

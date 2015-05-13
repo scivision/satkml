@@ -12,6 +12,13 @@ git clone https://github.com/scienceopen/satkml
 conda install --file requirements.txt
 pip install simplekml
 ```
+[more examples](http://introtopython.org/visualization_earthquakes.html)
+
+[API reference](http://matplotlib.org/basemap/)
+
+![alt fancy plot](http://scienceopen.github.io/gpsconst.png)
+
+![alt az/el plot](http://scienceopen.github.io/gpsazel.png)
 
 Example Use
 -----------
@@ -33,7 +40,4 @@ or if that doesn't work for you installing basemap, try:
 sudo apt-get install python-mpltoolkits.basemap python-mpltoolkits.basemap-data
 ```
 
-[more examples](http://introtopython.org/visualization_earthquakes.html)
-[API reference](http://matplotlib.org/basemap/)
-![alt fancy plot](http://scienceopen.github.io/gpsconst.png)
-![alt az/el plot](http://scienceopen.github.io/gpsazel.png)
+

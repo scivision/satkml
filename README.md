@@ -19,7 +19,8 @@ pip install simplekml
 
 Example Use
 -----------
-You can alternatively manually download gps-ops.txt via your web browser.
+You need to have the ephemeris files for the satellite(s) you want to plot.
+You can manually download gps-ops.txt via your web browser, or use curl or wget.
 ```
 wget http://celestrak.com/NORAD/elements/gps-ops.txt
 ```

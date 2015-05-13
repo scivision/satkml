@@ -3,26 +3,26 @@
 satkml
 ======
 
-make KML of satellites
+Plot satellite az/el, and make KML of satellites for visualization in Google Earth.
 
-Note: as with many Python programs, it runs faster in Python 3.4 than Python 2.7. 
-It runs just fine in both Python 2.7 and 3.4
-
-example download/usage. This example is for Fairbanks, Alaska on Oct 29, 2014 at 1600UT
+Installation:
+-------------
 ```
-cd ~
+conda install --file requirements.txt
+pip install simplekml
 git clone https://github.com/scienceopen/satkml
 curl -o ~/satkml/gps-ops.txt http://celestrak.com/NORAD/elements/gps-ops.txt
-cd ~/satkml
-python satplot.py gps-ops.txt 2014-10-29T16:00:00Z -k out.kml -l 65 -148 0 -p
 ```
 
-prerequisites: 
+Example Use
+-----------
 ```
-pip install -r requirements.txt
+python satplot.py gps-ops.txt 2015-04-29T16:00:00Z -k out.kml -l 65 -148 0 -p
 ```
+------------------------------------------------------------
 
-optional prerequisites: for plotting world map overlay:
+Alternate, manual install (not needed for most users)
+-----------------------------------------------------
 ```
 sudo apt-get install libgeos-dev libgeos++-dev
 pip install basemap --allow-external basemap --allow-unverified basemap

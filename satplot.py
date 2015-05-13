@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-#from pdb import set_trace
+"""
+Initially designed to work with GPS satellites
+"""
 from __future__ import division
 from ephem import readtle,Observer
 from os.path import expanduser
@@ -48,12 +50,12 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
         for i,s in enumerate(sats):
             si = satnum[i]
             s.compute(obs)
-            data.ix[si,'lat'] = degrees(s.sublat)
-            data.ix[si,'lon'] = degrees(s.sublong)
-            data.ix[si,'alt'] = s.elevation
-            data.ix[si,'az'] = degrees(s.az)
-            data.ix[si,'el'] = degrees(s.alt)
-            data.ix[si,'srange'] = s.range
+            data.at[si,'lat'] = degrees(s.sublat)
+            data.at[si,'lon'] = degrees(s.sublong)
+            data.at[si,'alt'] = s.elevation
+            data.at[si,'az'] = degrees(s.az)
+            data.at[si,'el'] = degrees(s.alt)
+            data.at[si,'srange'] = s.range
 
     belowhoriz = data['el']<0
     data.ix[belowhoriz,['az','el','srange']] = nan
@@ -71,6 +73,7 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
 
 def fancyplot(lat,lon,dates,satnum):
     #lon and lat cannot be pandas Series, must be values
+    figure()
     try:
         from mpl_toolkits.basemap import Basemap
         m = Basemap(projection='merc',
@@ -91,7 +94,6 @@ def fancyplot(lat,lon,dates,satnum):
             satnum = [satnum]
         for s,xp,yp in zip(satnum,x,y):
             ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
-        show()
     except ImportError as e:
         print('could not make fancy plot  ' + str(e))
 
@@ -152,7 +154,7 @@ def doplot(lat,lon,az,el,dates,satnum):
 
     if polar:
         azoffs = 0#radians(3)
-        az = radians(az.values.astype(float))
+        az = radians(az.astype(float))
         el = 90-el
         ax2=figure().gca(polar=True)
         ax2.plot(az,el, marker='.',linestyle='')
@@ -190,8 +192,6 @@ def doplot(lat,lon,az,el,dates,satnum):
                 ax2.text(az[s]+azoffs, el[s],
                          s,fontsize='small')
 
-    show()
-
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
@@ -205,3 +205,4 @@ if __name__ == '__main__':
 
     data = main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat,a.noplot)
 
+    show()

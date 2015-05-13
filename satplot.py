@@ -133,7 +133,7 @@ def dokml(belowhoriz,lat,lon,alt_m,obs,kmlfn,satnum):
 
 
 def doplot(lat,lon,az,el,dates,satnum):
-    polar =True
+    polar =False
 
     fg = figure()
     ax1 = fg.gca()

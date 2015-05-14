@@ -28,14 +28,12 @@ wget http://celestrak.com/NORAD/elements/gps-ops.txt
 
 Plot satellites at one time:
 ```
-python satplot.py gps-ops.txt 2015-05-12T16:00:00 -k out.kml -l 65 -148 
-0
+python satplot.py gps-ops.txt 2015-05-12T16:00:00 -k out.kml -l 65 -148 0
 ```
 
 Plot satellites for a range of time:
 ```
-python satplot.py gps-ops.txt 2015-05-12T16:00:00 2015-05-12T17:00:00 -l 
-65 -148 0
+python satplot.py gps-ops.txt 2015-05-12T16:00:00 2015-05-12T17:00:00 -l 65 -148 0
 ```
 
 The main data product of the program is a 3-D pandas Panel named "data" 

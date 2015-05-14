@@ -58,6 +58,9 @@ def fancyplot(data):
 
     dates = data.items.values
     satnum = data.major_axis
+    if dates.size>6:
+        print('skipping fancy map plot due to too many times (plot will get overly crowded)')
+        return
     #lon and lat cannot be pandas Series, must be values
     for d in data:
         lat= data[d]['lat'].values; lon= data[d]['lon'].values

@@ -1,5 +1,3 @@
-[![Code Health](https://landscape.io/github/scienceopen/satkml/master/landscape.png)](https://landscape.io/github/scienceopen/satkml/master)
-
 satkml
 ======
 

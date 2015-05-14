@@ -15,13 +15,8 @@ from re import search
 forNhours = 24
 everyNminutes = 15
 
-def main(tlefn,date,kmlfn,obslla,satreq, showplot):
-    obs = Observer()
-    try:
-        obs.lat = str(obslla[0]); obs.lon = str(obslla[1])
-        obs.elevation=str(obslla[2])
-    except ValueError:
-        print('observation location not specified. defaults to lat=0, lon=0')
+def loopsat(tlefn,date,kmlfn,obslla,satreq):
+    obs = setupobs(obslla)
 #%% preallocation
     if satreq is not None:
         dates = date_range(parse(date),
@@ -37,70 +32,66 @@ def main(tlefn,date,kmlfn,obslla,satreq, showplot):
         for d in dates:
             obs.date = d
             sat.compute(obs)
-            data.at[d,'lat'] = degrees(sat.sublat)
-            data.at[d,'lon'] = degrees(sat.sublong)
-            data.at[d,'alt'] = sat.elevation
-            data.at[d,'az'], data.ix[d,'el'] = degrees(sat.az), degrees(sat.alt)
-            data.at[d,'srange'] = sat.range
+            data.at[d,['lat','lon','alt']] = degrees(sat.sublat), degrees(sat.sublong), sat.elevation
+            data.at[d,['az','el','srange']] = degrees(sat.az), degrees(sat.alt),sat.range
+
+        belowhoriz = data['el']<0
+        data.ix[belowhoriz,['az','el','srange']] = nan
     else:
         dates = [parse(date)] #list for plotting
-        obs.date = dates[0]
-        data,satnum = compsat(tlefn,obs)
+        data,satnum,belowhoriz = compsat(tlefn,obs,dates)
 
-    belowhoriz = data['el']<0
-    data.ix[belowhoriz,['az','el','srange']] = nan
-#%% basic plot
-    if showplot:
-        doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
-#%% write kml
-    dokml(belowhoriz,data['lat'],data['lon'],data['alt'],
-          obs, kmlfn,satnum)
-#%% fancy plot
-    if showplot:
-        fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
+    return data,dates,satnum,belowhoriz,obs
 
-    return data
+def setupobs(lla):
+    obs = Observer()
+    try:
+        obs.lat = str(lla[0]); obs.lon = str(lla[1]); obs.elevation=str(lla[2])
+    except ValueError:
+        print('observation location not specified. defaults to lat=0, lon=0')
+    return obs
 
-def compsat(tlefn,obs):
+def compsat(tlefn,obs,dates):
+    obs.date = dates[0]
     sats,satnum = loadTLE(tlefn)
     data = DataFrame(index=satnum,columns=['az','el','lat','lon','alt','srange'])
 
     for i,s in enumerate(sats):
         si = satnum[i]
         s.compute(obs)
-        data.at[si,'lat'] = degrees(s.sublat)
-        data.at[si,'lon'] = degrees(s.sublong)
-        data.at[si,'alt'] = s.elevation
-        data.at[si,'az'] = degrees(s.az)
-        data.at[si,'el'] = degrees(s.alt)
-        data.at[si,'srange'] = s.range
+        data.at[si,['lat','lon','alt']] = degrees(s.sublat), degrees(s.sublong), s.elevation
+        data.at[si,['az','el','srange']] = degrees(s.az), degrees(s.alt), s.range
 
-    return data,satnum
+    belowhoriz = data['el']<0
+    data.ix[belowhoriz,['az','el','srange']] = nan
+
+    return data,satnum,belowhoriz
 
 def fancyplot(lat,lon,dates,satnum):
-    #lon and lat cannot be pandas Series, must be values
-    ax= figure().gca()
     try:
         from mpl_toolkits.basemap import Basemap
-        m = Basemap(projection='merc',
-                      llcrnrlat=-80,urcrnrlat=80,
-                      llcrnrlon=-180,urcrnrlon=180,
-                      lat_ts=20,
-                      resolution='c')
-
-        m.drawcoastlines()
-        m.drawcountries()
-        m.drawmeridians(arange(0,360,30))
-        m.drawparallels(arange(-90,90,30))
-        x,y = m(lon,lat)
-        m.plot(x,y,'o',color='#aaaaff',markersize=14)
-        ax.set_title('GPS constellation at\n' + str(dates[0]))
-        if not isinstance(satnum,list):
-            satnum = [satnum]
-        for s,xp,yp in zip(satnum,x,y):
-            ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
     except ImportError as e:
-        print('could not make fancy plot  ' + str(e))
+        print('could not make fancy plot.  {}'.format(e))
+        return
+    #lon and lat cannot be pandas Series, must be values
+    ax= figure().gca()
+    m = Basemap(projection='merc',
+                  llcrnrlat=-80, urcrnrlat=80,
+                  llcrnrlon=-180,urcrnrlon=180,
+                  lat_ts=20,
+                  resolution='c')
+
+    m.drawcoastlines()
+    m.drawcountries()
+    m.drawmeridians(arange(0,360,30))
+    m.drawparallels(arange(-90,90,30))
+    x,y = m(lon,lat)
+    m.plot(x,y,'o',color='#aaaaff',markersize=14)
+    ax.set_title('GPS constellation at\n' + str(dates[0]))
+    if not isinstance(satnum,list):
+        satnum = [satnum]
+    for s,xp,yp in zip(satnum,x,y):
+        ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
 
 
 def loadTLE(filename):
@@ -120,7 +111,6 @@ def loadTLE(filename):
             prn.append(int(search(r'(?<=PRN)\s*\d\d',sat.name).group()))
             l1 = f.readline()
 
-    print('{} satellites loaded into list'.format(len(satlist)))
     return satlist,prn
 
 def dokml(belowhoriz,lat,lon,alt_m,obs,kmlfn,satnum):
@@ -160,7 +150,7 @@ def doplot(lat,lon,az,el,dates,satnum):
     if polar:
         azoffs = 0#radians(3)
         az = radians(az.astype(float))
-        el = 90-el
+        el = 90-el.astype(float)
         ax2=figure().gca(polar=True)
         ax2.plot(az,el, marker='.',linestyle='')
         ax2.set_theta_zero_location('N')
@@ -207,7 +197,17 @@ if __name__ == '__main__':
     p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
     p.add_argument('--sat',help='satellite you want to pick from file',type=int,default=None)
     a = p.parse_args()
+    showplot = a.noplot
 
-    data = main(a.tlefn,a.date,a.kmlfn,a.lla,a.sat,a.noplot)
+    data,dates,satnum,belowhoriz,obs = loopsat(a.tlefn,a.date,a.kmlfn,a.lla,a.sat,)
+
+    #%% basic plot
+    if showplot:
+        doplot(data['lat'],data['lon'],data['az'],data['el'],dates,satnum)
+#%% write kml
+    dokml(belowhoriz,data['lat'],data['lon'],data['alt'], obs, a.kmlfn,satnum)
+#%% fancy plot
+    if showplot:
+        fancyplot(data['lat'].values,data['lon'].values,dates,satnum)
 
     show()

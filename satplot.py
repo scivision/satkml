@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
 Initially designed to work with GPS satellites
+see README.md for examples and explanation
+
+output:
+-------
+data: a pandas 3-D Panel with dimensions time x satnum x parameter
 """
 from __future__ import division
 from ephem import readtle,Observer

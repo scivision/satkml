@@ -16,6 +16,7 @@ from matplotlib.pyplot import figure,show
 from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
+import seaborn as sns
 
 def loopsat(tlefn,dates,kmlfn,obslla):
     obs = setupobs(obslla)
@@ -147,7 +148,7 @@ def doplot(data):
     ax1.set_xlim(-180,180)
     ax1.set_ylim(-90,90)
     ax1.set_title('Latitude & Longitude from\n{} to {}'.format(dates[0], dates[-1]))
-    ax1.grid(True)
+    #ax1.grid(True)
     ax1.yaxis.set_major_locator(MultipleLocator(15))
     ax1.yaxis.set_minor_locator(MultipleLocator(5))
     ax1.xaxis.set_major_locator(MultipleLocator(30))
@@ -174,7 +175,7 @@ def doplot(data):
         ax2.set_xlim(0,360)
         ax2.set_ylim(0,90)
 
-    ax2.grid(True)
+    #ax2.grid(True)
 
     ax1.plot(lon,lat,marker='.',linestyle='')
     ax2.set_title('Azimuth & Elevation by PRN from\n{} to {}'.format(dates[0],dates[-1]))

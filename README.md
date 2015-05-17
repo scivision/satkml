@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/scienceopen/satkml/badges/gpa.svg)](https://codeclimate.com/github/scienceopen/satkml)
+
 satkml
 ======
 

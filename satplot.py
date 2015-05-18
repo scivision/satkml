@@ -159,7 +159,7 @@ def doplot(data):
         az = radians(az.astype(float))
         el = 90-el.astype(float)
         ax2=figure(2).gca(polar=True)
-        ax2.plot(az,el, marker='.',linestyle='')
+        ax2.plot(az,el, marker='.',linestyle='-')
         ax2.set_theta_zero_location('N')
         ax2.set_theta_direction(-1)
         ''' http://stackoverflow.com/questions/18721762/matplotlib-polar-plot-is-not-plotting-where-it-should '''
@@ -169,7 +169,7 @@ def doplot(data):
     else:
         azoffs=3
         ax2 = figure(2).gca()
-        ax2.plot(az,el,marker='.',linestyle='')
+        ax2.plot(az,el,marker='.',linestyle='-')
         ax2.set_xlabel('azimuth [deg.]')
         ax2.set_ylabel('elevation [deg.]')
         ax2.set_xlim(0,360)
@@ -177,7 +177,7 @@ def doplot(data):
 
     #ax2.grid(True)
 
-    ax1.plot(lon,lat,marker='.',linestyle='')
+    ax1.plot(lon,lat,marker='.',linestyle='-')
     ax2.set_title('Azimuth & Elevation by PRN from\n{} to {}'.format(dates[0],dates[-1]))
 
     if len(dates)<6: #don't want overcrowded plot

@@ -27,7 +27,7 @@ try:
     import seaborn as sns
     sns.set(context='talk', style='whitegrid')
 except ImportError as e:
-    warn('disabling advanced plotting. pip install seaborn   {}'.format(e))
+    pass
 
 def loopsat(tlefn,dates,kmlfn,obslla):
     obs = setupobs(obslla)
@@ -206,12 +206,12 @@ def doplot(data,obs):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
-    p.add_argument('tlefn',help='file with TLE to parse',type=str)
+    p.add_argument('tlefn',help='file with TLE to parse')
     p.add_argument('-d','--date',help='start/stop time to start 24 hour plot YYYY-mm-ddTHH:MM:SSZ',nargs='+',type=str,default='')
     p.add_argument('-T','--period',help='time interval (MINUTES) to compute sats. position (default=15 min)',type=str,default='15')
     p.add_argument('--noplot',help='show plots',action='store_false')
-    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(None,None,None))
-    p.add_argument('-k','--kmlfn',help='filename to save KML to',type=str,default=None)
+    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(None,)*3)
+    p.add_argument('-k','--kmlfn',help='filename to save KML to')
     a = p.parse_args()
     showplot = a.noplot
 

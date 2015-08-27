@@ -1,4 +1,6 @@
-[![Code Climate](https://codeclimate.com/github/scienceopen/satkml/badges/gpa.svg)](https://codeclimate.com/github/scienceopen/satkml)
+.. image:: https://codeclimate.com/github/scienceopen/satkml/badges/gpa.svg
+   :target: https://codeclimate.com/github/scienceopen/satkml
+   :alt: Code Climate
 
 ======
 satkml
@@ -47,7 +49,7 @@ The main data product of the program is a 3-D pandas Panel named "data" with dim
 
 Alternate, manual install (not needed for most users)
 -----------------------------------------------------
-Most peopl do not need to do this::
+Most people do not need to do this::
 
     sudo apt-get install libgeos-dev libgeos++-dev
     pip install basemap --allow-external basemap --allow-unverified basemap

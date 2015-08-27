@@ -1,6 +1,6 @@
-ephem>=3.7.5
-pandas>=0.10
+ephem
+pandas
 matplotlib>=1.4
-numpy>=1.6
-basemap>=1.0
+numpy
+basemap
 

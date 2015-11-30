@@ -6,3 +6,4 @@ pandas
 matplotlib
 numpy
 basemap
+pathlib2

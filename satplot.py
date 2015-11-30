@@ -9,7 +9,7 @@ data: a pandas 3-D Panel with dimensions time x satnum x parameter
 """
 from __future__ import division
 from ephem import readtle,Observer
-from os.path import expanduser
+from pathlib2 import Path
 from numpy import degrees,nan,isfinite,arange,radians
 from pandas import date_range, DataFrame,Panel
 from matplotlib.pyplot import figure,show
@@ -30,19 +30,13 @@ except ImportError as e:
     pass
 
 def loopsat(tlefn,dates,kmlfn,obslla):
-    obs = setupobs(obslla)
+    assert len(obslla) == 3
+    obs = Observer()
+    obs.lat = str(obslla[0]); obs.lon = str(obslla[1]); obs.elevation=float(obslla[2])
 
     data,belowhoriz = compsat(tlefn,obs,dates)
 
     return data,obs,belowhoriz
-
-def setupobs(lla):
-    obs = Observer()
-    try:
-        obs.lat = str(lla[0]); obs.lon = str(lla[1]); obs.elevation=float(lla[2])
-    except ValueError:
-        warn('observation location not specified. defaults to lat=0, lon=0')
-    return obs
 
 def compsat(tlefn,obs,dates):
     cols = ['az','el','lat','lon','alt','srange']
@@ -100,12 +94,13 @@ def fancyplot(data):
             ax.text(xp,yp,s,ha='center',va='center',fontsize=11)
 
 
-def loadTLE(filename):
+def loadTLE(tlefn):
     """ Loads a TLE file and creates a list of satellites.
     http://blog.thetelegraphic.com/2012/gps-sattelite-tracking-in-python-using-pyephem/
     """
     #pat = '(?<=PRN)\d\d'
-    with open(filename) as f:
+    tlefn = Path(tlefn).expanduser()
+    with tlefn.open('r') as f:
         satlist = []; prn = []
         l1 = f.readline()
         while l1:
@@ -128,7 +123,7 @@ def dokml(belowhoriz,data,obs,kmlfn):
               lat= d['lat']; lon= d['lon']; alt_m = d['alt']
               satnum = d.index
 
-              kmlfn = expanduser(kmlfn)
+              kmlfn = Path(kmlfn).expanduser()
               kml1d = skml.Kml()
               for s in satnum:
                   if not belowhoriz[s]:
@@ -136,7 +131,7 @@ def dokml(belowhoriz,data,obs,kmlfn):
                       linestr.coords = [(obs.lon, obs.lat, obs.elevation),
                                         (lon[s], lat[s], alt_m[s])]
                       linestr.altitudemode = skml.AltitudeMode.relativetoground
-              kml1d.save(kmlfn)
+              kml1d.save(str(kmlfn))
       except Exception as e:
           warn('unable to write KML. Do you have simplekml package installed? ' + str(e))
 
@@ -207,10 +202,10 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='converts satellite position into KML for Google Earth viewing')
     p.add_argument('tlefn',help='file with TLE to parse')
-    p.add_argument('-d','--date',help='start/stop time to start 24 hour plot YYYY-mm-ddTHH:MM:SSZ',nargs='+',type=str,default='')
-    p.add_argument('-T','--period',help='time interval (MINUTES) to compute sats. position (default=15 min)',type=str,default='15')
+    p.add_argument('-d','--date',help='start/stop time to start 24 hour plot YYYY-mm-ddTHH:MM:SSZ',nargs='+',default='')
+    p.add_argument('-T','--period',help='time interval (MINUTES) to compute sats. position (default=15 min)',default='15')
     p.add_argument('--noplot',help='show plots',action='store_false')
-    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3,default=(None,)*3)
+    p.add_argument('-l','--lla',help='WGS84 lat lon [degrees] alt [meters] of observer',nargs=3)
     p.add_argument('-k','--kmlfn',help='filename to save KML to')
     a = p.parse_args()
     showplot = a.noplot

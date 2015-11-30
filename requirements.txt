@@ -1,6 +1,8 @@
+setuptools
+six
+python-dateutil
 ephem
 pandas
-matplotlib>=1.4
+matplotlib
 numpy
 basemap
-

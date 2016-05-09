@@ -7,7 +7,6 @@ output:
 -------
 data: a pandas 3-D Panel with dimensions time x satnum x parameter
 """
-from __future__ import division
 from ephem import readtle,Observer
 from pathlib2 import Path
 from numpy import degrees,nan,isfinite,arange,radians

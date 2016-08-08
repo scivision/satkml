@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Initially designed to work with GPS satellites
 see README.md for examples and explanation
@@ -8,7 +8,7 @@ output:
 data: a pandas 3-D Panel with dimensions time x satnum x parameter
 """
 from ephem import readtle,Observer
-from pathlib2 import Path
+from satkml import Path
 from numpy import degrees,nan,isfinite,arange,radians
 from pandas import date_range, DataFrame,Panel
 from matplotlib.pyplot import figure,show
@@ -17,16 +17,10 @@ from dateutil.parser import parse
 from re import search
 from warnings import warn
 from six import string_types
-try:
-    import simplekml as skml
-except ImportError as e:
-    warn('cannot write KML. pip install simplekml   {}'.format(e))
+import simplekml as skml
 #
-try:
-    import seaborn as sns
-    sns.set(context='talk', style='whitegrid')
-except ImportError as e:
-    pass
+import seaborn as sns
+sns.set(context='talk', style='whitegrid')
 
 def loopsat(tlefn,dates,kmlfn,obslla):
     assert len(obslla) == 3

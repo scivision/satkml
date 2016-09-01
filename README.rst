@@ -1,6 +1,3 @@
-.. image:: https://codeclimate.com/github/scienceopen/satkml/badges/gpa.svg
-   :target: https://codeclimate.com/github/scienceopen/satkml
-   :alt: Code Climate
 
 ======
 satkml

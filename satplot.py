@@ -112,7 +112,7 @@ def dokml(belowhoriz,data,obs,kmlfn):
     # right now it just overwrites the kml file until it reaches the last time.
     if kmlfn is not None:
       try:
-          for t,d in data.iteritems():
+          for t,d in data.items():
               lat= d['lat']; lon= d['lon']; alt_m = d['alt']
               satnum = d.index
 

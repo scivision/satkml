@@ -7,6 +7,8 @@ output:
 -------
 data: a pandas 3-D Panel with dimensions time x satnum x parameter
 """
+from __future__ import print_function
+from sys import stderr
 from ephem import readtle,Observer
 from satkml import Path
 from numpy import degrees,nan,isfinite,arange,radians
@@ -15,7 +17,6 @@ from matplotlib.pyplot import figure,show
 from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
-from warnings import warn
 from six import string_types
 import simplekml as skml
 #
@@ -57,13 +58,13 @@ def fancyplot(data):
     try:
         from mpl_toolkits.basemap import Basemap
     except ImportError as e:
-        warn('could not make fancy plot.  {}'.format(e))
+        print('could not make fancy plot.  {}'.format(e),file=stderr)
         return
 
     dates = data.items.values
     satnum = data.major_axis
     if dates.size>6:
-        warn('skipping fancy map plot due to too many times (plot will get overly crowded)')
+        print('skipping fancy map plot due to too many times (plot will get overly crowded)',file=stderr)
         return
     #lon and lat cannot be pandas Series, must be values
     for d in data:

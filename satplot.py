@@ -17,7 +17,6 @@ from matplotlib.pyplot import figure,show
 from matplotlib.ticker import MultipleLocator
 from dateutil.parser import parse
 from re import search
-from six import string_types
 import simplekml as skml
 #
 import seaborn as sns
@@ -205,7 +204,7 @@ if __name__ == '__main__':
     showplot = a.noplot
 
 #%% setup dates
-    if len(a.date) == 1 or isinstance(a.date,string_types):
+    if len(a.date) == 1 or isinstance(a.date,str):
         dates = [parse(a.date)]
     elif len(a.date) ==2:
         dates = date_range(start=a.date[0], end=a.date[1],  freq='{}T'.format(a.period))

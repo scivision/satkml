@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 from setuptools import setup
-import subprocess
-
 try:
-    subprocess.call(['conda','install','--file','requirements.txt'])
+    import conda.cli
+    conda.cli.main('install','--file','requirements.txt')
 except Exception as e:
-    pass
+    print(e)
 
 #%% install
 setup(name='satkml',
-      description='Plot satellite tracks in KML',
-      author='Michael Hirsch',
-      url='https://github.com/scienceopen/satkml',
-      install_requires=['pathlib2','simplekml'],
+      install_requires=['simplekml'],
       packages=['satkml']
       )

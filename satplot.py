@@ -10,7 +10,7 @@ data: a pandas 3-D Panel with dimensions time x satnum x parameter
 from __future__ import print_function
 from sys import stderr
 from ephem import readtle,Observer
-from satkml import Path
+from pathlib import Path
 from numpy import degrees,nan,isfinite,arange,radians
 from pandas import date_range, DataFrame,Panel
 from matplotlib.pyplot import figure,show

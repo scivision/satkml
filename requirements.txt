@@ -1,7 +1,0 @@
-setuptools
-python-dateutil
-ephem
-pandas
-matplotlib
-numpy
-basemap

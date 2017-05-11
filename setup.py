@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# NOTE: when basemap-1.1 is released, it may be on Pypi again.
 req = ['python-dateutil','ephem','pandas','matplotlib','numpy','basemap',]
 pipreq=['simplekml']
 # %%
@@ -9,6 +8,7 @@ try:
     conda.cli.main('install',*req)
 except Exception as e:
     pip.main(['install'] + req)
+pip.main(['install'] + pipreq)
 # %% install
 from setuptools import setup
 

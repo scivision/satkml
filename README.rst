@@ -20,7 +20,7 @@ Installation
 Examples
 ===========
 The first argument "TLE" can be a URL pointing to a TLE, a filename containing TLE, or the TLE itself.
-If you specify a URL, the program will download to the current directory and *reuse* that TLE rather than repeatedly downloading from the URL.
+If you specify a URL, the program will download to the current directory and load it.
 
 Plot satellites at one instant
 ------------------------------

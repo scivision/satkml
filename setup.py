@@ -17,4 +17,5 @@ setup(name='satkml',
       author='Michael Hirsch, Ph.D.',
       description='Plots numerous satellites in Matplotlib and to KML for Google Earth',
       version='0.5',
+      install_requires=pip+pipreq,
       )

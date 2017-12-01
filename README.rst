@@ -5,11 +5,13 @@ satkml
 
 Plot satellite az/el, and make KML of satellites for visualization in Google Earth.
 
+.. contents::
+
 Installation
 ============
 ::
 
-    python setup.py develop
+    pip install -e .
 
 .. image:: test/gpsconst.png
     :alt: GPS plot over lat long
@@ -22,15 +24,15 @@ Examples
 The first argument "TLE" can be a URL pointing to a TLE, a filename containing TLE, or the TLE itself.
 If you specify a URL, the program will download to the current directory and load it.
 
-Plot satellites at one instant
-------------------------------
+time instant
+------------
 ::
 
     python satplot.py gps-ops.txt 2015-05-12T16:00:00 -k out.kml -c 65 -148 0
 
 
-Plot satellites for a range of time
------------------------------------
+range of time
+-------------
 ::
 
     python satplot.py gps-ops.txt 2015-05-12T16:00:00 2015-05-12T17:00:00 -c 65 -148 0
@@ -42,11 +44,11 @@ Alternate, manual install (not needed for most users)
 =====================================================
 Most people do not need to do this::
 
-    sudo apt-get install libgeos-dev libgeos++-dev
+    apt install libgeos-dev libgeos++-dev
     pip install basemap
 
-matplotlib basemap references
-=============================
+Notes
+=====
 `basemap examples <http://introtopython.org/visualization_earthquakes.html>`_
 
 `basemap API reference <http://matplotlib.org/basemap/>`_

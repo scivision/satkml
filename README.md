@@ -1,3 +1,6 @@
+This package worked, but was ARCHIVED due to using 3 obsolete libraries: basemap, pyephem and pandas.Panel.
+Also it need a thorough cleanup, but I felt there were enough similar scripts out there to not make it worthwhile at this time.
+
 # Satellite KML generator
 
 Plot satellite az/el, and make KML of satellites for visualization in Google Earth.
